@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style/style.css">
+    <link rel="stylesheet" type="text/css" href="./style/d3_style.css">
+
+
+    <title>MOOCvis</title>
+</head>
+
+<body>
+
+
+    <!-- LOAD D3 LIb -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+    <!-- LOAD UNDERSCORE LIb -->
+    <script src="./js/underscore.js"></script>
+    <script src="./js/underscore.math.js"></script>
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="position: absolute; left:0; top:0">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">MOOCvis</a>
+            </div>
+
+
+            <div id="navbar" class="navbar-collapse collapse">
+
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Layout
+                            <span class="caret"></span></a>
+                        <ul class="layout dropdown-menu">
+                            <li class="ForceAtlas" onclick="control_layout(this)"><a href="#">Force Atlas</a></li>
+                            <li class="YifanHu" onclick="control_layout(this)"><a href="#">Yifan Hu</a></li>
+
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Show Nodes / Edges / Planes
+                            <span class="caret"></span></a>
+                        <ul class="network dropdown-menu">
+                            <li class="dropdown-header">Nodes & Edges</li>
+                            <li><a href="#"><input class="cb_network nodes" type="checkbox" onchange="control_network_component(this)" value="nodes"/> Nodes </a></li>
+                            <li><a href="#"><input class="cb_network edges" type="checkbox" onchange="control_network_component(this)" value="edges"/> Edges </a></li>
+                            <li class="dropdown-header">Communities (BigGlam)</li>
+                        </ul>
+                    </li>
+
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Node & Edge Attributes
+                            <span class="caret"></span></a>
+                        <ul class="nodeAttr dropdown-menu">
+                            <li class="dropdown-header">Node size by</li>
+                            <li class="overlap_num" onclick="control_nodeSize(this)"><a href="#">Overlap Num (BigGlam) </a></li>
+                            <li class="link_overlap_num" onclick="control_nodeSize(this)"><a href="#">Overlap Num (L.C) </a></li>
+                            <li class="performance" onclick="control_nodeSize(this)"><a href="#">Performance (T+1)</a></li>
+                            <li class="none" onclick="control_nodeSize(this)"><a href="#">None (only edge) </a></li>
+                            <!--<li class="betweenness" onclick="control_nodeSize(this)"><a href="#">Betweenness</a></li>-->
+
+                            <li class="dropdown-header">Node & Edge color by</li>
+                            <li class="area" onclick="control_nodeColor(this)"><a href="#">Academic Area</a></li>
+                            <li class="betweenness" onclick="control_nodeColor(this)"><a href="#">Betweenness</a></li>
+                            <li class="transitivity" onclick="control_nodeColor(this)"><a href="#">Clustering Coefficient</a></li>
+                            <li class="mix_rank" onclick="control_nodeColor(this)"><a href="#">Between + C.C.</a></li>
+                            <li class="community" onclick="control_nodeColor(this)"><a href="#">Community (BigGlam) </a></li>
+                            <li class="link_community" onclick="control_nodeColor(this)"><a href="#">Community (L.C) </a></li>
+                            <li class="foldness" onclick="control_nodeColor(this)"><a href="#">Foldness </a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Plot axis by
+                            <span class="caret"></span></a>
+                        <ul class="sidePlot dropdown-menu">
+                            <li class="dropdown-header">X-axis by</li>
+
+                            <li class="overlap_num x_axis" type="x" onclick="control_panelPlot(this)"><a href="#">Foldness (BigGlam) </a></li>
+                            <li class="link_overlap_num x_axis" type="x" onclick="control_panelPlot(this)"><a href="#">Foldness (L.C) </a></li>
+                            <li class="performance x_axis" type="x" onclick="control_panelPlot(this)"><a href="#">Performance (T+1)</a></li>
+                            <li class="trans x_axis" type="x" onclick="control_panelPlot(this)"><a href="#">Clustering Coefficient</a></li>
+                            <li class="between x_axis" type="x" onclick="control_panelPlot(this)"><a href="#">Betweenness</a></li>
+                            <li class="mix_rank x_axis" type="x" onclick="control_panelPlot(this)"><a href="#">Between + C.C. </a></li>
+
+                            <li class="dropdown-header">Y-axis by</li>
+
+                            <li class="overlap_num y_axis" type="y" onclick="control_panelPlot(this)"><a href="#">Foldness (BigGlam) </a></li>
+                            <li class="link_overlap_num y_axis" type="y" onclick="control_panelPlot(this)"><a href="#">Foldness (L.C) </a></li>
+                            <li class="performance y_axis" type="y" onclick="control_panelPlot(this)"><a href="#">Performance (T+1)</a></li>
+                            <li class="trans y_axis" type="y" onclick="control_panelPlot(this)"><a href="#">Clustering Coefficient</a></li>
+                            <li class="between y_axis" type="y" onclick="control_panelPlot(this)"><a href="#">Betweenness</a></li>
+                            <li class="mix_rank y_axis" type="y" onclick="control_panelPlot(this)"><a href="#">Between + C.C. </a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="about" class="active"><a href="#">About</a></li>
+                </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </div>
+
+    </nav>
+
+    <div id="container">
+        <div id="loading"></div>
+
+
+        <!--
+        <div id="basic-info-pane">
+            <h2 class="underline">Color Info</h2>
+            <div class="colorCode-info">
+                <span class="colorCode" style="color:#862a31">Arts and Humanities<br></span>
+                <span class="colorCode" style="color:#2d8d2d">Personal Development<br></span>
+                <span class="colorCode" style="color:#7e552c">Language Learning<br></span>
+                <span class="colorCode" style="color:#767c2b">Social Sciences<br></span>
+                <span class="colorCode" style="color:#7e4b2c">Business<br></span>
+                <span class="colorCode" style="color:#284562">Computer Science<br></span>
+                <span class="colorCode" style="color:#342f69">Data Science<br></span>
+                <span class="colorCode" style="color:#702a70">Life Sciences<br></span>
+                <span class="colorCode" style="color:#4d3275">Physical Science and Engineering<br></span>
+                <span class="colorCode" style="color:#250751">Math and Logic<br></span>
+
+            </div>
+
+        </div>
+        -->
+
+        <div id="d3_container" class="col-sm-10 offset-col-sm-10"></div>
+        <div id="side_panel" class="well col-sm-2">
+            <h4 id="course-title"></h4>
+            <p>Course Features:</p>
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <td>Provider</td>
+                    <td id="course-provider"></td>
+                </tr>
+                <tr>
+                    <td>Area</td>
+                    <td id="course-area"></td>
+                </tr>
+                <tr>
+                    <td>Subject</td>
+                    <td id="course-subject"></td>
+                </tr>
+                <tr>
+                    <td>School</td>
+                    <td id="course-school"></td>
+                </tr>
+                <tr>
+                    <td>Community (L.C)</td>
+                    <td id="course-community"></td>
+                </tr>
+                <tr>
+                    <td>Num of overlapping (L.C)</td>
+                    <td id="course-overlapping-community"></td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <script src="./js/main.js"></script>
+
+
+
+    <!-- Modals -->
+    <div id="aboutModal" class="modal">
+        <!-- about Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>About</h3>
+            </div>
+            <div class="modal-body">
+                <section>
+                    <h4>MOOCvis</h4>
+                    <p>This works represent the data from MOOC review community.</p>
+                    <br>
+
+                </section>
+
+
+                <section>
+                    <h4>Development</h4>
+                    <p>Powered by d3.js, sigma.js</p>
+                    <br>
+
+                </section>
+
+            </div>
+            <div class="modal-footer">
+                <!--<h5>Modal Footer</h5>-->
+                <p>Developed and Designed by Heungseok Park. </p>
+                <p>Copyright &copy; 2017. Heungseok Park. All rights reserved. </p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="./js/ui_control.js"></script>
+
+
+</body>
+</html>

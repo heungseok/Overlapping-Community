@@ -1,0 +1,28 @@
+{
+  "name": "network_overlapping_community",
+  "version": "1.0.0",
+  "description": "Network visaulization with overlapping community",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heungseok/Overlapping-Community.git"
+  },
+  "keywords": [
+    "Network",
+    "visualization",
+    "community",
+    "visualization"
+  ],
+  "author": "Heungseok Park",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heungseok/Overlapping-Community/issues"
+  },
+  "homepage": "https://github.com/heungseok/Overlapping-Community#readme",
+  "dependencies": {
+    "express": "^4.16.0"
+  }
+}
