@@ -25,7 +25,7 @@ var size_mode = "overlap_num", color_mode = "link_community", plot_x_mode = "lin
 
 var communities = [];
 var link_communities = [];
-var overlap_threshold = 5;
+var overlap_threshold = 1;
 
 var course_info;
 var nodes, overlapping_nodes, link_overlapping_nodes, links;
@@ -57,7 +57,7 @@ var pie = d3.pie()
 var pie_arc = d3.arc()
     .outerRadius(function(d) {
         if(size_mode=="overlap_num")
-            return 0.001 + (+d.data.overlap_num*2);
+            return 0.001 + (+d.data.overlap_num);
 
     })
     .innerRadius(0);
@@ -164,6 +164,7 @@ $(document).ready(function(){
 function initD3(){
 
     d3.json("./data/t4_cc_machine_learning_final.json", function(error, graph) {
+    // d3.json("./data/t4_cc_machine_learning_EGO_final.json", function(error, graph) {
 
         // ************* 1. graph data parsing ************ //
         // 먼저 edge 데이터 파싱하면서, 해당 source, target node에 attribute 저장
@@ -201,7 +202,6 @@ function initD3(){
                 'y': d.y,
                 'color': getCommunityColor(d.communities[0]),
 
-                // 그리고 rank, centrality 등 모두 통일된 range로 스케일 조정 필수.
                 'community': _.uniq(d.communities),
                 'overlap_num': _.uniq(d.communities).length,
 
@@ -423,7 +423,9 @@ function getOverlappingNodes (){
 
         var from = _.pluck(_.where(links, {source: node.index}), "community");
         var to = _.pluck(_.where(links, {target: node.index}), "community");
-        var neighbors = _.union(from, to);
+        // var neighbors = _.union(from, to); // unique ver.
+        var neighbors = Array.prototype.concat(from, to);
+        console.log(neighbors);
 
         neighbors.forEach(function(nei){
             var commu_index = _.indexOf(_.pluck(node.overlapping_communities, "id"), nei);
@@ -432,6 +434,7 @@ function getOverlappingNodes (){
                 overlaps[index].overlapping_communities[commu_index].value++;
         })
     });
+    console.log(overlaps);
     return overlaps;
 }
 
