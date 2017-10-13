@@ -57,7 +57,7 @@ var pie = d3.pie()
 var pie_arc = d3.arc()
     .outerRadius(function(d) {
         if(size_mode=="overlap_num")
-            return 0.001 + (+d.data.overlap_num);
+            return 0.001 + (5+2*d.data.overlap_num);
 
     })
     .innerRadius(0);
@@ -163,7 +163,9 @@ $(document).ready(function(){
 
 function initD3(){
 
-    d3.json("./data/t4_cc_machine_learning_final.json", function(error, graph) {
+    // d3.json("./data/t3_ct_data_visualization_final.json", function(error, graph) {
+    d3.json("./data/t2_ct_networked_life_final.json", function(error, graph) {
+    // d3.json("./data/t4_cc_machine_learning_final.json", function(error, graph) {
     // d3.json("./data/t4_cc_machine_learning_EGO_final.json", function(error, graph) {
 
         // ************* 1. graph data parsing ************ //
@@ -251,6 +253,7 @@ function initD3(){
                 var points = [];
                 nodes.forEach(function (node) {
                     if(Number(node.overlap_num) > 1){
+
                         if(_.contains(node.community, d.id))
                             points.push([x(node.x), y(node.y), node.index])
                         }else{
@@ -259,8 +262,13 @@ function initD3(){
                         }
                 });
 
-                 var convexHull = d3.polygonHull(points);
-                 return smoothHull(convexHull);
+                if (points.length > 2){
+                    var convexHull = d3.polygonHull(points);
+                    return smoothHull(convexHull);
+                }else{
+                    return;
+                }
+
 
              });
 
@@ -292,7 +300,7 @@ function initD3(){
             .attr("fill-opacity", getNodeOpacity)
             .attr("cx", function(d) { return x(d.x); })
             .attr("cy", function(d) { return y(d.y); })
-            .attr("r", function(d) { return d.overlap_num; })
+            .attr("r", function(d) { return 5+d.overlap_num; })
             .on("mouseover", mouseMoveOnNode)
             .on("mouseout", mouseOutOnNode)
             .call(d3.drag()
